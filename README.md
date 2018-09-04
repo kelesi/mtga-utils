@@ -1,11 +1,12 @@
 # Export your card collection from MTG: Arena
 You need to install [python-mtga](https://github.com/mtgatracker/python-mtga) to use the export tool.
 
-Note:
+#### Note:
 mtga-export.py reads the log MTGA/Unity log file located under: 
-`"%AppData%\LocalLow\Wizards Of The Coast\MTGA\output_log.txt".`
-
-If the developers stop logging to this file, this tool will not work anymore.
+    
+    "%AppData%\LocalLow\Wizards Of The Coast\MTGA\output_log.txt"
+    
+If the MTGA game developers stop logging to this file, this export tool will not work anymore.
 
 ## Examples:
 Export your collection in [mtggoldfish](https://www.mtggoldfish.com/help/import_formats#mtggoldfish) format:

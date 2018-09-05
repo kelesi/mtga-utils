@@ -9,7 +9,7 @@ mtga-export.py reads the MTGA/Unity log file located under:
 If the MTGA game developers stop logging to this file, this export tool will not work anymore.
 
 ## Quick installation without python on Windows
-Just download the standalone windows [latest](https://github.com/kelesi/mtga-utils/releases/download/latest/mtga-export.exe) pre-built executable from [releases](https://github.com/kelesi/mtga-utils/releases).
+Just download the standalone windows [latest](https://github.com/kelesi/mtga-utils/releases/latest) pre-built executable from [releases](https://github.com/kelesi/mtga-utils/releases).
 
 ### Run it from cmd
 Export your collection in [mtggoldfish](https://www.mtggoldfish.com/help/import_formats#mtggoldfish) format:
@@ -35,14 +35,15 @@ Export your collection in [deckstats](https://www.mtggoldfish.com/help/import_fo
 ## General usage:
 
 ```
-usage: mtga-export.py [-h] [-l LOG_FILE] [-k KEYWORD] [--collids] [-c]
-                      [-e {name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id} [{name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id} ...]]
-                      [-gf] [-ds] [-f FILE]
+usage: mtga-export.exe [-h] [-v] [-l LOG_FILE] [-k KEYWORD] [--collids] [-c]
+                       [-e {name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id} [{name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id} ...]]
+                       [-gf] [-ds] [-f FILE] [--debug]
 
 Parse MTGA log file
 
 optional arguments:
   -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
   -l LOG_FILE, --log_file LOG_FILE
                         MTGA/Unity log file [Win: %AppData%\LocalLow\Wizards
                         Of The Coast\MTGA\output_log.txt]
@@ -55,4 +56,5 @@ optional arguments:
   -gf, --goldfish       Export in mtggoldfish format
   -ds, --deckstats      Export in deckstats format
   -f FILE, --file FILE  Store export to file
-```
+  --debug               Show debug messages
+  ```

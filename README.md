@@ -9,7 +9,7 @@ mtga-export.py reads the MTGA/Unity log file located under:
 If the MTGA game developers stop logging to this file, this export tool will not work anymore.
 
 ## Quick installation without python on Windows
-Just download the standalone windows [latest](https://github.com/kelesi/mtga-utils/releases/download/v0.1.0/mtga-export.exe) pre-built executable from [releases](https://github.com/kelesi/mtga-utils/releases).
+Just download the standalone windows [latest](https://github.com/kelesi/mtga-utils/releases/download/latest/mtga-export.exe) pre-built executable from [releases](https://github.com/kelesi/mtga-utils/releases).
 
 ### Run it from cmd
 Export your collection in [mtggoldfish](https://www.mtggoldfish.com/help/import_formats#mtggoldfish) format:

@@ -10,6 +10,7 @@ import argparse
 import shlex
 import sys
 import os
+from setuptools_scm import get_version
 
 MTGA_COLLECTION_KEYWORD = "PlayerInventory.GetPlayerCardsV3"
 MTGA_WINDOWS_LOG_FILE = os.getenv('APPDATA')+"\..\LocalLow\Wizards Of The Coast\MTGA\output_log.txt"
@@ -58,6 +59,7 @@ def get_argparse_parser():
         argparse.ArgumentParser: Parser object
     """
     parser = argparse.ArgumentParser(description="Parse MTGA log file")
+    parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + get_version())
     parser.add_argument("-l", "--log_file", help="MTGA/Unity log file [Win: %%AppData%%\LocalLow\Wizards Of The Coast\MTGA\output_log.txt]", nargs=1)
     parser.add_argument("-k", "--keyword", help="List json under keyword", nargs=1)
     parser.add_argument("--collids", help="List collection ids", action="store_true")
@@ -87,6 +89,10 @@ def parse_arguments(args_string=None):
         args = parser.parse_args()
     else:
         args = parser.parse_args(shlex.split(args_string))
+
+    if len(sys.argv) < 2:
+        parser.print_help()
+        sys.exit(0)
 
     return args
 

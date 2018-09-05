@@ -8,6 +8,20 @@ mtga-export.py reads the MTGA/Unity log file located under:
     
 If the MTGA game developers stop logging to this file, this export tool will not work anymore.
 
+## Quick installation without python on Windows
+Just download the standalone windows [latest](https://github.com/kelesi/mtga-utils/releases/download/v0.1.0/mtga-export.exe) pre-built executable from [releases](https://github.com/kelesi/mtga-utils/releases).
+
+### Run it from cmd
+Export your collection in [mtggoldfish](https://www.mtggoldfish.com/help/import_formats#mtggoldfish) format:
+
+`mtga-export.exe --goldfish -f mtga_collection_goldfish.csv`
+
+Export your collection in [deckstats](https://www.mtggoldfish.com/help/import_formats#deckstats) format:
+
+`mtga-export.exe --deckstats -f mtga_collection_deckstats.csv`
+
+Your collection will be saved to the current folder into mtga_collection_goldfish.csv or mtga_collection_deckstats.csv, which you can use to  import into mtggoldfish.com or deckstats.net.
+
 ## Examples:
 Export your collection in [mtggoldfish](https://www.mtggoldfish.com/help/import_formats#mtggoldfish) format:
 
@@ -18,7 +32,7 @@ Export your collection in [deckstats](https://www.mtggoldfish.com/help/import_fo
 `mtga-export.py --deckstats -f mtga_collection_deckstats.csv`
 
 
-## Usage:
+## General usage:
 
 ```
 usage: mtga-export.py [-h] [-l LOG_FILE] [-k KEYWORD] [--collids] [-c]

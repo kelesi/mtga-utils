@@ -156,11 +156,11 @@ def main(args_string=None):
 
     mlog = MtgaLog(log_file)
 
+    if args.collids:
+        args.keyword = MTGA_COLLECTION_KEYWORD
+
     if args.keyword:
         print(get_keyword_data(args, mlog))
-
-    if args.collids:
-        print(get_keyword_data(mlog, MTGA_COLLECTION_KEYWORD))
 
     if args.collection:
         for card, count in get_collection(args, mlog):

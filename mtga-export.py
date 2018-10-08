@@ -13,7 +13,7 @@ import sys
 import os
 
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 MTGA_COLLECTION_KEYWORD = "PlayerInventory.GetPlayerCardsV3"
 MTGA_WINDOWS_LOG_FILE = os.getenv('APPDATA')+"\..\LocalLow\Wizards Of The Coast\MTGA\output_log.txt"
 

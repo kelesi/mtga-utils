@@ -4,3 +4,4 @@ json
 mtga
 shlex
 argparse
+future

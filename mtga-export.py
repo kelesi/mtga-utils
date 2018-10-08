@@ -19,6 +19,9 @@ MTGA_WINDOWS_LOG_FILE = os.getenv('APPDATA')+"\..\LocalLow\Wizards Of The Coast\
 class MtgaLogParsingError(ValueError):
     pass
 
+class MtgaUnknownCard(ValueError):
+    pass
+
 class MtgaLog(object):
     """Process MTGA/Unity log file"""
 
@@ -67,8 +70,12 @@ class MtgaLog(object):
     def get_collection(self):
         collection = self.get_last_json_block('<== ' + MTGA_COLLECTION_KEYWORD)
         for id, count in collection.iteritems():
-            card = all_mtga_cards.find_one(id)
-            yield [card, count]
+            try:
+                card = all_mtga_cards.find_one(id)
+                yield [card, count]
+            except ValueError as exception:
+                yield MtgaUnknownCard(exception)
+
 
 
 def get_argparse_parser():
@@ -133,12 +140,16 @@ def get_keyword_data(args, mlog):
 def get_collection(args, mlog):
     try:
         for data in mlog.get_collection():
-            yield data
+            if isinstance(data, MtgaUnknownCard):
+                print('Unknown card in collection: %s (Try to update the mtga module)' % data)
+            else:
+                yield data
     except MtgaLogParsingError as error:
         print('Error parsing json data: ', error)
         if args.debug:
             print("Got:")
             print(mlog.get_last_keyword_block('<== ' + MTGA_COLLECTION_KEYWORD))
+
 
 
 def main(args_string=None):

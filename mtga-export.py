@@ -11,9 +11,10 @@ import argparse
 import shlex
 import sys
 import os
+import scryfall
 
 
-__version__ = "0.1.3"
+__version__ = "0.2.0"
 MTGA_COLLECTION_KEYWORD = "PlayerInventory.GetPlayerCardsV3"
 MTGA_WINDOWS_LOG_FILE = os.getenv('APPDATA')+"\..\LocalLow\Wizards Of The Coast\MTGA\output_log.txt"
 
@@ -76,6 +77,12 @@ class MtgaLog(object):
                 yield [card, count]
             except ValueError as exception:
                 yield MtgaUnknownCard(exception)
+                #Card not found, try to get it from scryfall
+                try:
+                    card = scryfall.get_mtga_card(id)
+                    yield [card, count]
+                except Exception as scryfall_error:
+                    yield scryfall.ScryfallError(scryfall_error)
 
 
 def get_argparse_parser():
@@ -141,7 +148,9 @@ def get_collection(args, mlog):
     try:
         for data in mlog.get_collection():
             if isinstance(data, MtgaUnknownCard):
-                print('Unknown card in collection: %s (Try to update the mtga module)' % data)
+                print('Warning: Unknown card in collection: %s (Trying to fetch it from Scryfall)' % data)
+            elif isinstance(data, scryfall.ScryfallError):
+                print('Warning: Could not fetch unknown card from scryfall: %s' % data)
             else:
                 yield data
     except MtgaLogParsingError as error:

@@ -8,12 +8,26 @@ from mtga.models.card import Card
 import argparse
 import json
 
+
 SCRYFALL_API = "https://api.scryfall.com/cards"
+
+
+class ScryfallError(ValueError):
+    pass
+
+
+def get_mtga_card(arena_id):
+    scryfall_card = get_arena_card_json(arena_id)
+    return scryfall_to_mtga(scryfall_card)
+
 
 def get_arena_card_json(arena_id):
     """Get card from Scryfall by arena id"""
-    card = requests.get(SCRYFALL_API+'/arena/'+str(arena_id))
-    return card.json()
+    response = requests.get(SCRYFALL_API+'/arena/'+str(arena_id))
+    if response.status_code != requests.codes.ok:
+        raise ScryfallError('Unknown card id %s' % str(arena_id))
+    return response.json()
+
 
 def scryfall_to_mtga(scryfall_card):
     name = scryfall_card['name'].lower().replace(' ', '_')
@@ -26,7 +40,7 @@ def scryfall_to_mtga(scryfall_card):
         sub_types = types[1]
     except IndexError:
         sub_types = ""
-    set_id = scryfall_card['set']
+    set_id = scryfall_card['set'].upper()
     rarity = scryfall_card['rarity']
     set_number = scryfall_card['collector_number']
     mtga_id = scryfall_card['arena_id']

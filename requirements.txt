@@ -5,3 +5,5 @@ mtga
 shlex
 argparse
 future
+requests
+json

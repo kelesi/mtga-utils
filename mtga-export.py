@@ -14,7 +14,7 @@ import os
 import scryfall
 
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 MTGA_COLLECTION_KEYWORD = "PlayerInventory.GetPlayerCardsV3"
 MTGA_WINDOWS_LOG_FILE = os.getenv('APPDATA')+"\..\LocalLow\Wizards Of The Coast\MTGA\output_log.txt"
 
@@ -29,7 +29,6 @@ class MtgaLog(object):
 
     def __init__(self, log_filename):
         self.log_filename = log_filename
-        self.exception = None
 
     def get_last_keyword_block(self, keyword):
         """Find json block for specific keyword (last in the file)
@@ -197,7 +196,10 @@ def main(args_string=None):
     if args.goldfish:
         output.append('Card,Set ID,Set Name,Quantity,Foil')
         for card, count in get_collection(args, mlog):
-            output.append('"%s",%s,%s,%s' % (card.pretty_name, card.set, '', count))
+            card_set = card.set
+            if card_set == 'ANA':
+                card_set = 'ARENA'
+            output.append('"%s",%s,%s,%s' % (card.pretty_name, card_set, '', count))
 
     if args.deckstats:
         output.append('amount,card_name,is_foil,is_pinned,set_id,set_code')

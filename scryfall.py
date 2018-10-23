@@ -25,7 +25,7 @@ def get_arena_card_json(arena_id):
     """Get card from Scryfall by arena id"""
     response = requests.get(SCRYFALL_API+'/arena/'+str(arena_id))
     if response.status_code != requests.codes.ok:
-        raise ScryfallError('Unknown card id %s' % str(arena_id))
+        raise ScryfallError('Unknown card id %s. Status code: %s' % (arena_id, response.status_code))
     return response.json()
 
 

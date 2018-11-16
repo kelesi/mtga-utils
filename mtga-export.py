@@ -14,7 +14,7 @@ import os
 import scryfall
 
 
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 MTGA_COLLECTION_KEYWORD = "PlayerInventory.GetPlayerCardsV3"
 MTGA_WINDOWS_LOG_FILE = os.getenv('APPDATA')+"\..\LocalLow\Wizards Of The Coast\MTGA\output_log.txt"
 
@@ -202,10 +202,13 @@ def main(args_string=None):
             output.append('"%s",%s,%s,%s' % (card.pretty_name, card_set, '', count))
 
     if args.deckstats:
-        output.append('amount,card_name,is_foil,is_pinned,set_id,set_code')
+        output.append('card_name,amount,set_code,is_foil,is_pinned')
         for card, count in get_collection(args, mlog):
-            output.append('%s,"%s",%s,%s,%s,"%s"' % (
-                count, card.pretty_name, 0, 0, card.set_number, card.set
+            card_set = card.set
+            if card_set == 'ANA':
+                card_set = 'MTGA'
+            output.append('"%s",%s,"%s",%s,%s' % (
+                card.pretty_name, count, card_set, 0, 0,
             ))
 
     if output != []:

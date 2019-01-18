@@ -1,0 +1,33 @@
+<== PlayerInventory.GetPlayerCardsV3(10)
+{
+    "67682": "1",
+    "67688": "2"
+}
+
+<== PlayerInventory.GetPlayerCardsV3(10)
+{
+    "67682": "3",
+    "123": "4",
+    "67688": "4",
+    "68369": "1",
+    "64037": "2",
+    "69108": "1"
+
+}
+
+<== TestKey
+{
+    "test1":
+    {
+        "test11": "4"
+    },
+    "67688": {
+        "test22": { "x": { "a": "1"}
+        }
+    }}
+
+blah
+{ "foo" : "bar" }
+
+invalid
+{ aa : bb }

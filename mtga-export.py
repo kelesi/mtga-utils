@@ -68,20 +68,21 @@ class MtgaLog(object):
         json_string = ''.join(json_list)
         return json.loads(json_string)
 
-    def get_collection(self):
+    def get_collection(self, fallback=True):
         collection = self.get_last_json_block('<== ' + MTGA_COLLECTION_KEYWORD)
-        for (id, count) in iteritems(collection):
+        for (mtga_id, count) in iteritems(collection):
             try:
-                card = all_mtga_cards.find_one(id)
-                yield [card, count]
+                card = all_mtga_cards.find_one(mtga_id)
+                yield [mtga_id, card, count]
             except ValueError as exception:
-                yield MtgaUnknownCard(exception)
+                yield [mtga_id, MtgaUnknownCard(exception), 0]
                 #Card not found, try to get it from scryfall
-                try:
-                    card = scryfall.get_mtga_card(id)
-                    yield [card, count]
-                except Exception as scryfall_error:
-                    yield scryfall.ScryfallError(scryfall_error)
+                if fallback:
+                    try:
+                        card = scryfall.get_mtga_card(mtga_id)
+                        yield [mtga_id, card, count]
+                    except Exception as scryfall_error:
+                        yield [mtga_id, scryfall.ScryfallError(scryfall_error), 0]
 
 
 def get_argparse_parser():
@@ -145,13 +146,13 @@ def get_keyword_data(args, mlog):
 
 def get_collection(args, mlog):
     try:
-        for data in mlog.get_collection():
-            if isinstance(data, MtgaUnknownCard):
-                print('Warning: Unknown card in collection: %s (Trying to fetch it from Scryfall)' % data)
-            elif isinstance(data, scryfall.ScryfallError):
-                print('Warning: Could not fetch unknown card from scryfall: %s' % data)
+        for (mtga_id, card, count) in mlog.get_collection():
+            if isinstance(card, MtgaUnknownCard):
+                print('Warning: Unknown card in collection: %s (Trying to fetch it from Scryfall)' % card)
+            elif isinstance(card, scryfall.ScryfallError):
+                print('Warning: Could not fetch unknown card from scryfall: %s' % card)
             else:
-                yield data
+                yield [card, count]
     except MtgaLogParsingError as error:
         print('Error parsing json data: ', error)
         if args.debug:

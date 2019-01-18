@@ -1,4 +1,6 @@
 build/*
 dist/*
+.vscode
 mtga-export.spec
 *.pyc
+venv

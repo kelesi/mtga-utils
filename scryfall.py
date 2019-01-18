@@ -9,7 +9,8 @@ import argparse
 import json
 
 
-SCRYFALL_API = "https://api.scryfall.com/cards"
+SCRYFALL_CARDS_API = "https://api.scryfall.com/cards"
+SCRYFALL_SETS_API = "https://api.scryfall.com/sets"
 
 
 class ScryfallError(ValueError):
@@ -23,7 +24,7 @@ def get_mtga_card(arena_id):
 
 def get_arena_card_json(arena_id):
     """Get card from Scryfall by arena id"""
-    response = requests.get(SCRYFALL_API+'/arena/'+str(arena_id))
+    response = requests.get(SCRYFALL_CARDS_API+'/arena/'+str(arena_id))
     if response.status_code != requests.codes.ok:
         raise ScryfallError('Unknown card id %s. Status code: %s' % (arena_id, response.status_code))
     return response.json()
@@ -50,9 +51,18 @@ def scryfall_to_mtga(scryfall_card):
     )
     return mtga_card
 
+def get_set_info(set_name):
+    """gets info on requested set"""
+    response = requests.get(SCRYFALL_SETS_API+'/'+str(set_name))
+    if response.status_code == requests.codes.not_found:
+        print('Unknown set: %s. Reason: %s %s' % (set_name, response.status_code, response.reason))
+        return {}
+    if response.status_code != requests.codes.ok:
+        raise ScryfallError('Unknown set: %s. Status code: %s' % (set, response.status_code))
+    return response.json()
 
 if __name__ == "__main__":
     x = get_arena_card_json(68369)
-    print scryfall_to_mtga(x)
+    print(scryfall_to_mtga(x))
     y = get_arena_card_json(67542)
-    print scryfall_to_mtga(y)
+    print(scryfall_to_mtga(y))

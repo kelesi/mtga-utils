@@ -7,8 +7,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import unittest
 from parameterized import parameterized
 
-import mtga_export
-from mtga_export import MtgaLog, MtgaLogParsingError
+from mtga_log import *
 
 
 
@@ -17,7 +16,8 @@ class Test_MtgaLog(unittest.TestCase):
     def setUp(self):
         self.MTGA_LOG =  os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_mtga_output_log.txt')
         self.mlog = MtgaLog(self.MTGA_LOG)
-        self.mlog_collection = self.mlog.get_collection(False)
+        self.mlog.scryfall_fallback(False)
+        self.mlog_collection = self.mlog.get_collection()
 
     def test_get_last_json_block(self):
         result = self.mlog.get_last_json_block('<== TestKey')
@@ -55,7 +55,7 @@ class Test_MtgaLog(unittest.TestCase):
 
     @parameterized.expand([
         ["67682", "Aegis of the Heavens"],
-        ["123",   mtga_export.MtgaUnknownCard],
+        ["123",   MtgaUnknownCard],
         ["67688", "Ajani's Last Stand"],
         ["68369", "Firesong and Sunspeaker"],
         ["64037", "Bomat Courier"],

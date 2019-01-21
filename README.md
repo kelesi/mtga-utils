@@ -1,5 +1,5 @@
 # Export your card collection from MTG: Arena
-You need to install [python-mtga](https://github.com/mtgatracker/python-mtga) to use the export tool.
+You need to install [python-mtga](https://github.com/mtgatracker/python-mtga) to use the export tool or use the pre-built windows executable.
 
 #### Note:
 mtga-export.py reads the MTGA/Unity log file located under: 

@@ -69,21 +69,28 @@ class MtgaLog(object):
         json_string = ''.join(json_list)
         return json.loads(json_string)
 
+    def _fetch_card_from_scryfall(self, mtga_id):
+        if not self.fallback:
+            return None
+        try:
+            card = scryfall.get_mtga_card(mtga_id)
+        except Exception as scryfall_error:
+            card = scryfall.ScryfallError(scryfall_error)
+        return card
+
     def get_collection(self):
+        """Generator for MTGA collection"""
         collection = self.get_last_json_block('<== ' + MTGA_COLLECTION_KEYWORD)
         for (mtga_id, count) in iteritems(collection):
             try:
                 card = all_mtga_cards.find_one(mtga_id)
-                yield [mtga_id, card, count]
             except ValueError as exception:
-                yield [mtga_id, MtgaUnknownCard(exception), 0]
+                yield [mtga_id, MtgaUnknownCard(exception), count]
                 #Card not found, try to get it from scryfall
-                if self.fallback:
-                    try:
-                        card = scryfall.get_mtga_card(mtga_id)
-                        yield [mtga_id, card, count]
-                    except Exception as scryfall_error:
-                        yield [mtga_id, scryfall.ScryfallError(scryfall_error), 0]
+                card = self._fetch_card_from_scryfall(mtga_id)
+
+            if card is not None:
+                yield [mtga_id, card, count]
 
 
 

@@ -6,7 +6,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import unittest
 from parameterized import parameterized
-
+import scryfall
 from mtga_log import *
 
 
@@ -14,10 +14,8 @@ from mtga_log import *
 class Test_MtgaLog(unittest.TestCase):
 
     def setUp(self):
-        self.MTGA_LOG =  os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_mtga_output_log.txt')
+        self.MTGA_LOG =  os.path.join( os.path.dirname(os.path.realpath(__file__)), 'test_mtga_output_log.txt')
         self.mlog = MtgaLog(self.MTGA_LOG)
-        self.mlog.scryfall_fallback(False)
-        self.mlog_collection = self.mlog.get_collection()
 
     def test_get_last_json_block(self):
         result = self.mlog.get_last_json_block('<== TestKey')
@@ -62,15 +60,32 @@ class Test_MtgaLog(unittest.TestCase):
         ["69108", "Angelic Reward"]
     ])
     def test_collection(self, expected_mtga_id, expected_card_name):
-        for (mtga_id, card, count) in self.mlog_collection:
+        self.mlog.scryfall_fallback(True)
+        collection = self.mlog.get_collection()
+        for (mtga_id, card, count) in collection:
             if mtga_id == expected_mtga_id:
                 try:
                     self.assertEqual(card.pretty_name, expected_card_name)
                     self.assertEqual(str(card.mtga_id), str(expected_mtga_id))
                 except AttributeError:
                     self.assertIsInstance(card, expected_card_name)
+                    mtga_id, card, count = next(collection)
+                    self.assertIsInstance(card, scryfall.ScryfallError)
 
 
 
 class Test_Scryfall(unittest.TestCase):
-    pass
+    @parameterized.expand([
+        ["67682", "Aegis of the Heavens"],
+        ["123", scryfall.ScryfallError],
+        ["67688", "Ajani's Last Stand"],
+        ["68369", "Firesong and Sunspeaker"],
+        ["64037", "Bomat Courier"],
+        ["69108", "Angelic Reward"]
+    ])
+    def test_get_mtga_card(self, mtga_id, expected_card_name):
+        try:
+            card = scryfall.get_mtga_card(mtga_id)
+            self.assertEqual(card.pretty_name, expected_card_name)
+        except Exception as exception:
+            self.assertIsInstance(exception, expected_card_name)

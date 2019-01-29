@@ -2,3 +2,4 @@ mtga
 argparse
 future
 requests
+simplejson

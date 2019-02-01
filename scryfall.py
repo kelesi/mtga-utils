@@ -45,9 +45,10 @@ def scryfall_to_mtga(scryfall_card):
     rarity = scryfall_card['rarity']
     set_number = scryfall_card['collector_number']
     mtga_id = scryfall_card['arena_id']
+    abilities = {}
     mtga_card = Card(
         name, pretty_name, cost, color_identity,
-        card_type, sub_types, set_id, rarity, set_number, mtga_id
+        card_type, sub_types, abilities, set_id, rarity, set_number, mtga_id
     )
     return mtga_card
 

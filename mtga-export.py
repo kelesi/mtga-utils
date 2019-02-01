@@ -31,7 +31,8 @@ def get_argparse_parser():
         "-e", "--export", help="Export collection in custom format", nargs="+",
         choices=[
             'name', 'pretty_name', 'cost', 'sub_types',
-            'set', 'set_number', 'card_type', 'mtga_id'
+            'set', 'set_number', 'card_type', 'mtga_id',
+            'count'
         ]
     )
     parser.add_argument("-gf", "--goldfish", help="Export in mtggoldfish format", action="store_true")
@@ -126,7 +127,10 @@ def main(args_string=None):
         for card, count in get_collection(args, mlog):
             fields = []
             for key in args.export:
-                fields.append(str(getattr(card, key)))
+                if key == "count":
+                    fields.append(count)
+                else:
+                    fields.append(str(getattr(card, key)))
             output.append(','.join(fields))
 
     if args.completiontracker:
@@ -143,7 +147,7 @@ def main(args_string=None):
 
             sets_progression_output[card.set]['singlesOwned'] += 1
 
-            if count >= 4:
+            if int(count) >= 4:
                 sets_progression_output[card.set]['completeSetsOwned'] += 1
 
         output.append(json.dumps(sets_progression_output, indent=2))

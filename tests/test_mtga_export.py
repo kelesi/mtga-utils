@@ -75,6 +75,8 @@ class Test_MtgaLog(unittest.TestCase):
 
 
 class Test_Scryfall(unittest.TestCase):
+    """Test the scryfall module"""
+
     @parameterized.expand([
         ["67682", "Aegis of the Heavens"],
         ["123", scryfall.ScryfallError],
@@ -84,6 +86,7 @@ class Test_Scryfall(unittest.TestCase):
         ["69108", "Angelic Reward"]
     ])
     def test_get_mtga_card(self, mtga_id, expected_card_name):
+        """Test fetching cards from Scryfall using arena ids"""
         try:
             card = scryfall.get_mtga_card(mtga_id)
             self.assertEqual(card.pretty_name, expected_card_name)

@@ -6,8 +6,8 @@ from mtga.set_data import all_mtga_cards
 import scryfall
 
 MTGA_COLLECTION_KEYWORD = "PlayerInventory.GetPlayerCardsV3"
-MTGA_WINDOWS_LOG_FILE = os.getenv('APPDATA')+"\..\LocalLow\Wizards Of The Coast\MTGA\output_log.txt"
-MTGA_WINDOWS_FORMATS_FILE = os.getenv('APPDATA')+"\..\LocalLow\Wizards Of The Coast\MTGA\\formats.json"
+MTGA_WINDOWS_LOG_FILE = os.getenv('APPDATA')+"\\..\\LocalLow\\Wizards Of The Coast\\MTGA\\output_log.txt"
+MTGA_WINDOWS_FORMATS_FILE = os.getenv('APPDATA')+"\\..\\LocalLow\\Wizards Of The Coast\\MTGA\\formats.json"
 
 
 class MtgaLogParsingError(ValueError):

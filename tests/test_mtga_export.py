@@ -65,8 +65,8 @@ class Test_MtgaLog(unittest.TestCase):
         for (mtga_id, card, count) in collection:
             if mtga_id == expected_mtga_id:
                 try:
-                    self.assertEqual(card.pretty_name, expected_card_name)
                     self.assertEqual(str(card.mtga_id), str(expected_mtga_id))
+                    self.assertEqual(card.pretty_name, expected_card_name)
                 except AttributeError:
                     self.assertIsInstance(card, expected_card_name)
                     mtga_id, card, count = next(collection)

@@ -36,8 +36,8 @@ Export your collection in [deckstats](https://www.mtggoldfish.com/help/import_fo
 
 ```
 usage: mtga-export.exe [-h] [-v] [-l LOG_FILE] [-k KEYWORD] [--collids] [-c]
-                       [-e {name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id} [{name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id} ...]]
-                       [-gf] [-ds] [-f FILE] [--debug]
+                       [-e {name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id,count} [{name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id,count} ...]]
+                       [-gf] [-ct] [-ds] [-f FILE] [--debug]
 
 Parse MTGA log file
 
@@ -51,9 +51,11 @@ optional arguments:
                         List json under keyword
   --collids             List collection ids
   -c, --collection      List collection with card data
-  -e {name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id} [{name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id} ...], --export {name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id} [{name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id} ...]
+  -e {name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id,count} [{name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id,count} ...], --export {name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id,count} [{name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id,count} ...]
                         Export collection in custom format
   -gf, --goldfish       Export in mtggoldfish format
+  -ct, --completiontracker
+                        Export set completion
   -ds, --deckstats      Export in deckstats format
   -f FILE, --file FILE  Store export to file
   --debug               Show debug messages

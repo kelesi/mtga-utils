@@ -12,7 +12,7 @@ from mtga_log import *
 import scryfall
 
 
-__version__ = "0.2.3"
+__version__ = "0.2.4"
 
 
 def get_argparse_parser():
@@ -128,7 +128,7 @@ def main(args_string=None):
             fields = []
             for key in args.export:
                 if key == "count":
-                    fields.append(count)
+                    fields.append(str(count))
                 else:
                     fields.append(str(getattr(card, key)))
             output.append(','.join(fields))

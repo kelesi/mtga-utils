@@ -12,7 +12,7 @@ from mtga_log import *
 import scryfall
 
 
-__version__ = "0.2.4"
+__version__ = "0.2.5"
 
 
 def get_argparse_parser():
@@ -94,6 +94,11 @@ def get_collection(args, mlog):
             print(mlog.get_last_keyword_block('<== ' + MTGA_COLLECTION_KEYWORD))
 
 
+def normalize_set(set_id, conversion={}):
+    """Convert set id readable by goldfish/deckstats"""
+    conversion.update({'DAR': 'DOM'})
+    return conversion.get(set_id.upper(), set_id.upper())
+
 
 def main(args_string=None):
     output = []
@@ -155,17 +160,13 @@ def main(args_string=None):
     if args.goldfish:
         output.append('Card,Set ID,Set Name,Quantity,Foil')
         for card, count in get_collection(args, mlog):
-            card_set = card.set
-            if card_set == 'ANA':
-                card_set = 'ARENA'
+            card_set = normalize_set(card.set, {'ANA': 'ARENA'})
             output.append('"%s",%s,%s,%s,%s' % (card.pretty_name, card_set, '', count, ''))
 
     if args.deckstats:
         output.append('card_name,amount,set_code,is_foil,is_pinned')
         for card, count in get_collection(args, mlog):
-            card_set = card.set
-            if card_set == 'ANA':
-                card_set = 'MTGA'
+            card_set = normalize_set(card.set, {'ANA': 'MTGA'})
             output.append('"%s",%s,"%s",%s,%s' % (
                 card.pretty_name, count, card_set, 0, 0,
             ))

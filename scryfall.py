@@ -12,6 +12,13 @@ import json
 SCRYFALL_CARDS_API = "https://api.scryfall.com/cards"
 SCRYFALL_SETS_API = "https://api.scryfall.com/sets"
 
+SCRYFALL_SET_CONVERSION = {
+    'G18' : 'M19'
+}
+
+def normalize_set(set_id):
+    return SCRYFALL_SET_CONVERSION.get(set_id, set_id)
+
 
 class ScryfallError(ValueError):
     pass
@@ -41,14 +48,15 @@ def scryfall_to_mtga(scryfall_card):
         sub_types = types[1]
     except IndexError:
         sub_types = ""
-    set_id = scryfall_card['set'].upper()
+    set_id = normalize_set(scryfall_card['set'].upper())
     rarity = scryfall_card['rarity']
     set_number = scryfall_card['collector_number']
     mtga_id = scryfall_card['arena_id']
+    collectible = scryfall_card['collector_number'] != ""
     abilities = {}
     mtga_card = Card(
         name, pretty_name, cost, color_identity,
-        card_type, sub_types, abilities, set_id, rarity, set_number, mtga_id
+        card_type, sub_types, abilities, set_id, rarity, collectible, set_number, mtga_id
     )
     return mtga_card
 

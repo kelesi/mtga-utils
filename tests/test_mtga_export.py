@@ -56,7 +56,8 @@ class Test_MtgaLog(unittest.TestCase):
         ["123",   MtgaUnknownCard],
         ["67688", "Ajani's Last Stand"],
         ["68369", "Firesong and Sunspeaker"],
-        ["64037", "Bomat Courier"],
+        #["64037", "Bomat Courier"],
+        ["70192", "Faerie Vandal"],
         ["69108", "Angelic Reward"]
     ])
     def test_collection(self, expected_mtga_id, expected_card_name):

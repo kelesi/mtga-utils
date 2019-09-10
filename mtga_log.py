@@ -5,10 +5,17 @@ import simplejson as json
 from mtga.set_data import all_mtga_cards
 import scryfall
 
-MTGA_COLLECTION_KEYWORD = "PlayerInventory.GetPlayerCardsV3"
-MTGA_WINDOWS_LOG_FILE = os.getenv('APPDATA')+"\\..\\LocalLow\\Wizards Of The Coast\\MTGA\\output_log.txt"
-MTGA_WINDOWS_FORMATS_FILE = os.getenv('APPDATA')+"\\..\\LocalLow\\Wizards Of The Coast\\MTGA\\formats.json"
+def _mtga_file_path(filename):
+    """Get the full path to the specified MTGA file"""
+    appdata = os.getenv("APPDATA")
+    # If we don't have APPDATA, assume we're in the user's home directory
+    base = [appdata, ".."] if appdata else ["AppData"]
+    components = base + ["LocalLow", "Wizards of the Coast", "MTGA", filename]
+    return os.path.join(*components)
 
+MTGA_COLLECTION_KEYWORD = "PlayerInventory.GetPlayerCardsV3"
+MTGA_WINDOWS_LOG_FILE = _mtga_file_path("output_log.txt")
+MTGA_WINDOWS_FORMATS_FILE = _mtga_file_path("formats.json")
 
 class MtgaLogParsingError(ValueError):
     """Exception raised when parsing json data fails"""

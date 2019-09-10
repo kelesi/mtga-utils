@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """Export your card collection from MTG: Arena
     Notes:
         Card Collection - PlayerInventory.GetPlayerCardsV3

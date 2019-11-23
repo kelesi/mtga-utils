@@ -11,7 +11,7 @@ import sys
 import os
 from mtga_log import *
 import scryfall
-
+from mtga.models.card import Card
 
 __version__ = "0.2.8"
 
@@ -86,6 +86,8 @@ def get_collection(args, mlog):
                 print('Info: Unknown card in collection: %s (Will fetch it from Scryfall)' % card)
             elif isinstance(card, scryfall.ScryfallError):
                 print('Warning: Could not fetch unknown card from scryfall: %s' % card)
+            elif not isinstance(card, Card):
+                print('Warning: Unexpected card format [id=%s, card=%s]' % (mtga_id, str(card)))
             else:
                 yield [card, count]
     except MtgaLogParsingError as error:
@@ -126,6 +128,8 @@ def main(args_string=None):
 
     if args.collection:
         for card, count in get_collection(args, mlog):
+            if args.debug:
+                print('Debug: '+str(card))
             print(card.mtga_id, card, count)
 
     if args.export:

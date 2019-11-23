@@ -4,6 +4,7 @@ import os
 import simplejson as json
 from mtga.set_data import all_mtga_cards
 import scryfall
+import re
 
 def _mtga_file_path(filename):
     """Get the full path to the specified MTGA file"""
@@ -49,12 +50,16 @@ class MtgaLog(object):
         levels = 0
         with open(self.log_filename) as logfile:
             for line in logfile:
-                if copy:
-                    bucket.append(line)
-
                 if line.find(keyword) > -1:
                     bucket = []
+                    if line.count('{') > 0:
+                        line = re.sub(r'.*'+keyword, '', line)
+                    else:
+                        line = ""
                     copy = True
+
+                if copy:
+                    bucket.append(line)
 
                 levels += line.count('{')
                 levels -= line.count('}')
@@ -88,6 +93,7 @@ class MtgaLog(object):
     def get_collection(self):
         """Generator for MTGA collection"""
         collection = self.get_last_json_block('<== ' + MTGA_COLLECTION_KEYWORD)
+        collection = collection.get('payload', collection)
         for (mtga_id, count) in iteritems(collection):
             try:
                 card = all_mtga_cards.find_one(mtga_id)

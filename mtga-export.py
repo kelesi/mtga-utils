@@ -13,7 +13,7 @@ from mtga_log import *
 import scryfall
 from mtga.models.card import Card
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 
 def get_argparse_parser():

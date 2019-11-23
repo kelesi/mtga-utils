@@ -79,7 +79,18 @@ class Test_MtgaLog(unittest.TestCase):
                     mtga_id, card, count = next(collection)
                     self.assertIsInstance(card, scryfall.ScryfallError)
 
+    def test_inventory(self):
+        inventory = self.mlog.get_inventory()
 
+        self.assertEqual(inventory.gems, 1)
+        self.assertEqual(inventory.gold, 2)
+        self.assertEqual(inventory.tokens['Draft'], 3)
+        self.assertEqual(inventory.tokens['Sealed'], 4)
+        self.assertEqual(inventory.vault_progress, 5.6)
+        self.assertEqual(inventory.wildcards['Common'], 7)
+        self.assertEqual(inventory.wildcards['Uncommon'], 8)
+        self.assertEqual(inventory.wildcards['Rare'], 9)
+        self.assertEqual(inventory.wildcards['Mythic Rare'], 10)
 
 class Test_Scryfall(unittest.TestCase):
     """Test the scryfall module"""

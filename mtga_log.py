@@ -15,6 +15,7 @@ def _mtga_file_path(filename):
     return os.path.join(*components)
 
 MTGA_COLLECTION_KEYWORD = "PlayerInventory.GetPlayerCardsV3"
+MTGA_INVENTORY_KEYWORD = "PlayerInventory.GetPlayerInventory"
 MTGA_WINDOWS_LOG_FILE = _mtga_file_path("output_log.txt")
 MTGA_WINDOWS_FORMATS_FILE = _mtga_file_path("formats.json")
 
@@ -105,6 +106,10 @@ class MtgaLog(object):
             if card is not None:
                 yield [mtga_id, card, count]
 
+    def get_inventory(self):
+        """Convenience function to get the player's inventory"""
+        inventory_dict = self.get_last_json_block('<== ' + MTGA_INVENTORY_KEYWORD)
+        return MtgaInventory(inventory_dict)
 
 
 class MtgaFormats(object):
@@ -140,3 +145,37 @@ class MtgaFormats(object):
     def get_set_card_count(self, mtga_set):
         set_info = self.get_set_info(mtga_set)
         return set_info.get('card_count', 0)
+
+class MtgaInventory(object):
+    """Wrapper for the player's inventory"""
+
+    def __init__(self, inventory_dict):
+        self.inventory_dict = inventory_dict
+
+    @property
+    def gems(self):
+        return self.inventory_dict['gems']
+
+    @property
+    def gold(self):
+        return self.inventory_dict['gold']
+
+    @property
+    def tokens(self):
+        return {
+            'Draft': self.inventory_dict['draftTokens'],
+            'Sealed': self.inventory_dict['sealedTokens']
+        }
+
+    @property
+    def vault_progress(self):
+        return self.inventory_dict['vaultProgress']
+
+    @property
+    def wildcards(self):
+        return {
+            'Common': self.inventory_dict['wcCommon'],
+            'Uncommon': self.inventory_dict['wcUncommon'],
+            'Rare': self.inventory_dict['wcRare'],
+            'Mythic Rare': self.inventory_dict['wcMythic']
+        }

@@ -17,6 +17,19 @@
     "70192": "1"
 }
 
+<== PlayerInventory.GetPlayerInventory(579)
+{
+  "wcCommon": 7,
+  "wcUncommon": 8,
+  "wcRare": 9,
+  "wcMythic": 10,
+  "gold": 2,
+  "gems": 1,
+  "draftTokens": 3,
+  "sealedTokens": 4,
+  "vaultProgress": 5.6
+}
+
 <== TestKey
 {
     "test1":

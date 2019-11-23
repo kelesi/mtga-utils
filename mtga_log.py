@@ -109,6 +109,7 @@ class MtgaLog(object):
     def get_inventory(self):
         """Convenience function to get the player's inventory"""
         inventory_dict = self.get_last_json_block('<== ' + MTGA_INVENTORY_KEYWORD)
+        inventory_dict = inventory_dict.get('payload', inventory_dict)
         return MtgaInventory(inventory_dict)
 
 

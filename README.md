@@ -61,5 +61,5 @@ optional arguments:
   -i, --inventory       Print inventory
   -ij, --inventoryjson  Print inventory as json
   -f FILE, --file FILE  Store export to file
-  --debug               Show debug messages
+  --log [LOG]           Log level
 ```

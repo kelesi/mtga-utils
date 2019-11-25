@@ -2,7 +2,6 @@ from __future__ import print_function
 from future.utils import iteritems
 import os
 import simplejson as json
-from mtga.set_data import all_mtga_cards
 import scryfall
 import re
 
@@ -18,6 +17,12 @@ MTGA_COLLECTION_KEYWORD = "PlayerInventory.GetPlayerCardsV3"
 MTGA_INVENTORY_KEYWORD = "PlayerInventory.GetPlayerInventory"
 MTGA_WINDOWS_LOG_FILE = _mtga_file_path("output_log.txt")
 MTGA_WINDOWS_FORMATS_FILE = _mtga_file_path("formats.json")
+
+
+def find_one_mtga_card(mtga_id):
+    from mtga.set_data import all_mtga_cards
+    return all_mtga_cards.find_one(mtga_id)
+
 
 class MtgaLogParsingError(ValueError):
     """Exception raised when parsing json data fails"""
@@ -97,7 +102,7 @@ class MtgaLog(object):
         collection = collection.get('payload', collection)
         for (mtga_id, count) in iteritems(collection):
             try:
-                card = all_mtga_cards.find_one(mtga_id)
+                card = find_one_mtga_card(mtga_id)
             except ValueError as exception:
                 yield [mtga_id, MtgaUnknownCard(exception), count]
                 #Card not found, try to get it from scryfall

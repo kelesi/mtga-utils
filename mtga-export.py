@@ -5,13 +5,13 @@
         Log File in windows - "%AppData%\LocalLow\Wizards Of The Coast\MTGA\output_log.txt"
 """
 from __future__ import print_function
+import logging
 import argparse
 import shlex
 import sys
 import os
 from mtga_log import *
 import scryfall
-from mtga.models.card import Card
 
 __version__ = "0.3.2"
 
@@ -38,7 +38,7 @@ def print_arrays_with_keys(data, prefix='', separator='|', last_separator='='):
     if isinstance(data, (list, dict, tuple)):
         if prefix:
             prefix += separator
-        for key, value in data.iteritems():
+        for key, value in iteritems(data):
             print_arrays_with_keys(value, prefix + key, separator)
         return
     print(prefix + last_separator + str(data))
@@ -70,7 +70,7 @@ def get_argparse_parser():
     parser.add_argument("-i",  "--inventory", help="Print inventory", action="store_true")
     parser.add_argument("-ij", "--inventoryjson", help="Print inventory as json", action="store_true")
     parser.add_argument("-f",  "--file", help="Store export to file", nargs=1)
-    parser.add_argument("--debug", help="Show debug messages", action="store_true")
+    parser.add_argument("--log", help="Log level", nargs="?", default="INFO")
     return parser
 
 
@@ -94,6 +94,14 @@ def parse_arguments(args_string=None):
     return args
 
 
+def setup_logging(args):
+    """Setup logging for this script"""
+    numeric_level = getattr(logging, args.log.upper(), None)
+    if not isinstance(numeric_level, int):
+        raise ValueError('Invalid log level: %s' % args.log)
+    logging.basicConfig(level=numeric_level)
+
+
 def get_keyword_data(args, mlog):
     """Get json data for specific keyword as dict"""
     keyword = args.keyword[0]
@@ -101,15 +109,16 @@ def get_keyword_data(args, mlog):
         data = mlog.get_last_json_block('<== ' + keyword)
     except MtgaLogParsingError as error:
         print('Error: Could not parse json data: ', error)
-        if args.debug:
-            print("Got:")
-            print(mlog.get_last_keyword_block('<== ' + keyword))
+        logging.debug("Got:")
+        logging.debug(mlog.get_last_keyword_block('<== ' + keyword))
         return {}
     return data
 
 
 def get_collection(args, mlog):
     """Get collection and print messages"""
+    from mtga.models.card import Card
+
     try:
         for (mtga_id, card, count) in mlog.get_collection():
             if isinstance(card, MtgaUnknownCard):
@@ -122,9 +131,8 @@ def get_collection(args, mlog):
                 yield [card, count]
     except MtgaLogParsingError as error:
         print('Error: Could not parse json data: ', error)
-        if args.debug:
-            print("Got:")
-            print(mlog.get_last_keyword_block('<== ' + MTGA_COLLECTION_KEYWORD))
+        logging.debug("Got:")
+        logging.debug(mlog.get_last_keyword_block('<== ' + MTGA_COLLECTION_KEYWORD))
 
 
 def normalize_set(set_id, conversion={}):
@@ -137,6 +145,8 @@ def main(args_string=None):
     output = []
 
     args = parse_arguments(args_string)
+    setup_logging(args)
+    logging.debug('fsdf')
 
     log_file = MTGA_WINDOWS_LOG_FILE
     formats_file = MTGA_WINDOWS_FORMATS_FILE
@@ -158,8 +168,7 @@ def main(args_string=None):
 
     if args.collection:
         for card, count in get_collection(args, mlog):
-            if args.debug:
-                print('Debug: '+str(card))
+            logging.debug(str(card))
             print(card.mtga_id, card, count)
 
     if args.export:

@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 
-"""Scryfall to python-mtga Card
-"""
+"""Scryfall to python-mtga Card"""
 
 import requests
-from mtga.models.card import Card
 import argparse
 import json
 
@@ -38,6 +36,8 @@ def get_arena_card_json(arena_id):
 
 
 def scryfall_to_mtga(scryfall_card):
+    from mtga.models.card import Card
+
     name = scryfall_card['name'].lower().replace(' ', '_')
     pretty_name = scryfall_card['name']
     cost = list(scryfall_card['mana_cost'].replace('}', '').replace('{', ''))

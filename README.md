@@ -38,7 +38,7 @@ Export your collection in [deckstats](https://www.mtggoldfish.com/help/import_fo
 ```
 usage: mtga-export.py [-h] [-v] [-l LOG_FILE] [-k KEYWORD] [--collids] [-c]
                       [-e {name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id,count} [{name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id,count} ...]]
-                      [-gf] [-ds] [-ct] [-i] [-ij] [-f FILE] [--debug]
+                      [-gf] [-ds] [-ct] [-i] [-ij] [-f FILE] [--log [LOG]]
 
 Parse MTGA log file
 

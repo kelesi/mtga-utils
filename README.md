@@ -36,9 +36,9 @@ Export your collection in [deckstats](https://www.mtggoldfish.com/help/import_fo
 ## General usage:
 
 ```
-usage: mtga-export.exe [-h] [-v] [-l LOG_FILE] [-k KEYWORD] [--collids] [-c]
-                       [-e {name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id,count} [{name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id,count} ...]]
-                       [-gf] [-ct] [-ds] [-f FILE] [--debug]
+usage: mtga-export.py [-h] [-v] [-l LOG_FILE] [-k KEYWORD] [--collids] [-c]
+                      [-e {name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id,count} [{name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id,count} ...]]
+                      [-gf] [-ds] [-ct] [-i] [-ij] [-f FILE] [--debug]
 
 Parse MTGA log file
 
@@ -55,9 +55,11 @@ optional arguments:
   -e {name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id,count} [{name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id,count} ...], --export {name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id,count} [{name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id,count} ...]
                         Export collection in custom format
   -gf, --goldfish       Export in mtggoldfish format
+  -ds, --deckstats      Export in deckstats format
   -ct, --completiontracker
                         Export set completion
-  -ds, --deckstats      Export in deckstats format
+  -i, --inventory       Print inventory
+  -ij, --inventoryjson  Print inventory as json
   -f FILE, --file FILE  Store export to file
   --debug               Show debug messages
-  ```
+```

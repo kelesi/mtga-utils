@@ -13,7 +13,7 @@ import os
 from mtga_log import *
 import scryfall
 
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 
 
 def print_arrays_with_keys(data, prefix='', separator='|', last_separator='='):

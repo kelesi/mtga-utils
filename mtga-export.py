@@ -2,7 +2,7 @@
 """Export your card collection from MTG: Arena
     Notes:
         Card Collection - PlayerInventory.GetPlayerCardsV3
-        Log File in windows - "%AppData%\LocalLow\Wizards Of The Coast\MTGA\output_log.txt"
+        Log File in windows - "%AppData%\\LocalLow\\Wizards Of The Coast\\MTGA\\output_log.txt"
 """
 from __future__ import print_function
 import logging
@@ -11,9 +11,10 @@ import shlex
 import sys
 import os
 from mtga_log import *
+from mtga_formats import MtgaFormats, normalize_set
 import scryfall
 
-__version__ = "0.3.3"
+__version__ = "0.3.4"
 
 
 def print_arrays_with_keys(data, prefix='', separator='|', last_separator='='):
@@ -27,19 +28,19 @@ def print_arrays_with_keys(data, prefix='', separator='|', last_separator='='):
 
     Examples:
         >>> print_arrays_with_keys({'a': {'bb': {'ccc': 1}}})
-        |a|bb|ccc|1
+        a|bb|ccc=1
 
         >>> array = {'a': { 'aa': 1, 'bb': 2}, 'b': '3'}
-        >>> print_arrays_with_keys(array, 'prefix', ':')
-        prefix:a:aa:1
-        prefix:a:bb:2
-        prefix:b:3
+        >>> print_arrays_with_keys(array, 'prefix', ':', '=>')
+        prefix:a:aa=>1
+        prefix:a:bb=>2
+        prefix:b=>3
     """
     if isinstance(data, (list, dict, tuple)):
         if prefix:
             prefix += separator
         for key, value in iteritems(data):
-            print_arrays_with_keys(value, prefix + key, separator)
+            print_arrays_with_keys(value, prefix + key, separator, last_separator)
         return
     print(prefix + last_separator + str(data))
 
@@ -52,7 +53,7 @@ def get_argparse_parser():
     """
     parser = argparse.ArgumentParser(description="Parse MTGA log file")
     parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + __version__)
-    parser.add_argument("-l", "--log_file", help="MTGA/Unity log file [Win: %%AppData%%\LocalLow\Wizards Of The Coast\MTGA\output_log.txt]", nargs=1)
+    parser.add_argument("-l", "--log_file", help="MTGA/Unity log file [Win: %%AppData%%\\LocalLow\\Wizards Of The Coast\\MTGA\\output_log.txt]", nargs=1)
     parser.add_argument("-k", "--keyword", help="List json under keyword", nargs=1)
     parser.add_argument("--collids", help="List collection ids", action="store_true")
     parser.add_argument("-c", "--collection", help="List collection with card data", action="store_true")
@@ -135,18 +136,11 @@ def get_collection(args, mlog):
         logging.debug(mlog.get_last_keyword_block('<== ' + MTGA_COLLECTION_KEYWORD))
 
 
-def normalize_set(set_id, conversion={}):
-    """Convert set id readable by goldfish/deckstats"""
-    conversion.update({'DAR': 'DOM'})
-    return conversion.get(set_id.upper(), set_id.upper())
-
-
 def main(args_string=None):
     output = []
 
     args = parse_arguments(args_string)
     setup_logging(args)
-    logging.debug('fsdf')
 
     log_file = MTGA_WINDOWS_LOG_FILE
     formats_file = MTGA_WINDOWS_FORMATS_FILE

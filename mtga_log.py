@@ -5,6 +5,7 @@ import simplejson as json
 import scryfall
 import re
 
+
 def _mtga_file_path(filename):
     """Get the full path to the specified MTGA file"""
     appdata = os.getenv("APPDATA")
@@ -53,24 +54,28 @@ class MtgaLog(object):
         """
         bucket = []
         copy = False
-        levels = 0
+        dict_levels = 0
+        list_levels = 0
+
         with open(self.log_filename) as logfile:
             for line in logfile:
                 if line.find(keyword) > -1:
                     bucket = []
-                    if line.count('{') > 0:
+                    if line.count('{') > 0 or line.count('[') > 0:
                         line = re.sub(r'.*'+keyword, '', line)
                     else:
                         line = ""
                     copy = True
 
-                if copy:
+                if copy and line:
                     bucket.append(line)
 
-                levels += line.count('{')
-                levels -= line.count('}')
+                dict_levels += line.count('{') - line.count('}')
+                list_levels += line.count('[') - line.count(']')
 
-                if line.count('}') > 0 and levels == 0:
+                if line.count('}') > 0 and dict_levels == 0:
+                    copy = False
+                if line.count(']') > 0 and list_levels == 0:
                     copy = False
         return bucket
 
@@ -116,41 +121,6 @@ class MtgaLog(object):
         inventory_dict = self.get_last_json_block('<== ' + MTGA_INVENTORY_KEYWORD)
         inventory_dict = inventory_dict.get('payload', inventory_dict)
         return MtgaInventory(inventory_dict)
-
-
-class MtgaFormats(object):
-    """Process MTGA/Unity formats file"""
-
-    def __init__(self, formats_filename):
-        self.formats_filename = formats_filename
-
-    def _get_formats_json(self):
-        """Gets the formats json"""
-        with open(self.formats_filename) as formats_file:
-            return json.load(formats_file)
-
-    def get_format_sets(self, mtg_format):
-        """Returns list of current sets in standard format"""
-        try:
-            json_data = self._get_formats_json()
-        except ValueError as exception:
-            raise MtgaLogParsingError(exception)
-
-        sets = []
-        for item in json_data:
-            if item.get("name").lower() == str(mtg_format):
-                for mtga_set in item.get("sets"):
-                    sets.append(mtga_set)
-                    if mtga_set == "DAR":
-                        sets.append("DOM")
-        return sets
-
-    def get_set_info(self, mtga_set):
-        return scryfall.get_set_info(mtga_set)
-
-    def get_set_card_count(self, mtga_set):
-        set_info = self.get_set_info(mtga_set)
-        return set_info.get('card_count', 0)
 
 
 class MtgaInventory(object):

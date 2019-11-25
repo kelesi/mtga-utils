@@ -13,7 +13,35 @@ from mtga_log import *
 import scryfall
 from mtga.models.card import Card
 
-__version__ = "0.3.1"
+__version__ = "0.3.2"
+
+
+def print_arrays_with_keys(data, prefix='', separator='|', last_separator='='):
+    """Prints array branches on one line separated with a character.
+
+    Args:
+        prefix (string): Prefix to use at the begining of the line.
+            Defaults to empty string.
+        separator (string): Character or string to use as value/key separator.
+            Defaults to pipe '|'.
+
+    Examples:
+        >>> print_arrays_with_keys({'a': {'bb': {'ccc': 1}}})
+        |a|bb|ccc|1
+
+        >>> array = {'a': { 'aa': 1, 'bb': 2}, 'b': '3'}
+        >>> print_arrays_with_keys(array, 'prefix', ':')
+        prefix:a:aa:1
+        prefix:a:bb:2
+        prefix:b:3
+    """
+    if isinstance(data, (list, dict, tuple)):
+        if prefix:
+            prefix += separator
+        for key, value in data.iteritems():
+            print_arrays_with_keys(value, prefix + key, separator)
+        return
+    print(prefix + last_separator + str(data))
 
 
 def get_argparse_parser():
@@ -37,9 +65,11 @@ def get_argparse_parser():
         ]
     )
     parser.add_argument("-gf", "--goldfish", help="Export in mtggoldfish format", action="store_true")
-    parser.add_argument("-ct", "--completiontracker", help="Export set completion", action="store_true")
     parser.add_argument("-ds", "--deckstats", help="Export in deckstats format", action="store_true")
-    parser.add_argument("-f", "--file", help="Store export to file", nargs=1)
+    parser.add_argument("-ct", "--completiontracker", help="Export set completion", action="store_true")
+    parser.add_argument("-i",  "--inventory", help="Print inventory", action="store_true")
+    parser.add_argument("-ij", "--inventoryjson", help="Print inventory as json", action="store_true")
+    parser.add_argument("-f",  "--file", help="Store export to file", nargs=1)
     parser.add_argument("--debug", help="Show debug messages", action="store_true")
     return parser
 
@@ -175,6 +205,14 @@ def main(args_string=None):
             output.append('"%s",%s,"%s",%s,%s' % (
                 card.pretty_name, count, card_set, 0, 0,
             ))
+
+    if args.inventory:
+        inventory_dict = mlog.get_inventory().inventory()
+        print_arrays_with_keys(inventory_dict, '', ':')
+
+    if args.inventoryjson:
+        inventory_dict = mlog.get_inventory().inventory()
+        output.append(str(inventory_dict))
 
     if output != []:
         output_str = '\n'.join(output)

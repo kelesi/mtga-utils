@@ -147,6 +147,7 @@ class MtgaFormats(object):
         set_info = self.get_set_info(mtga_set)
         return set_info.get('card_count', 0)
 
+
 class MtgaInventory(object):
     """Wrapper for the player's inventory"""
 
@@ -180,3 +181,21 @@ class MtgaInventory(object):
             'Rare': self.inventory_dict['wcRare'],
             'Mythic Rare': self.inventory_dict['wcMythic']
         }
+
+    def __str__(self):
+        """String representation of the inventory"""
+        return str(self.inventory())
+
+    def inventory_raw(self):
+        return self.inventory_dict
+
+    def inventory(self):
+        """Dictionary representation of the inventory"""
+        return {
+            'Gems': self.gems,
+            'Gold': self.gold,
+            'Tokens': self.tokens,
+            'VaultProgress': self.vault_progress,
+            'Wildcards': self.wildcards
+        }
+

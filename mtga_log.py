@@ -59,10 +59,10 @@ class MtgaLog(object):
 
         with open(self.log_filename) as logfile:
             for line in logfile:
-                if line.find(keyword) > -1:
+                if re.search(r"%s\b" % re.escape(keyword), line):
                     bucket = []
                     if line.count('{') > 0 or line.count('[') > 0:
-                        line = re.sub(r'.*'+keyword, '', line)
+                        line = re.sub(r'.*' + re.escape(keyword), '', line)
                     else:
                         line = ""
                     copy = True

@@ -27,6 +27,11 @@ class Test_MtgaLog(unittest.TestCase):
             , '1'
         )
 
+    def test_get_last_json_block_whole_words(self):
+        result = self.mlog.get_last_json_block('<== KeywordOne')
+        self.assertEqual(result.get('id'), 1)
+        self.assertEqual(result.get('payload').get('value'), 1)
+
     def test_get_last_json_block2(self):
         result = self.mlog.get_last_json_block('blah')
         self.assertEqual(result.get('foo'), 'bar')

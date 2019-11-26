@@ -14,7 +14,7 @@ from mtga_log import *
 from mtga_formats import MtgaFormats, normalize_set
 import scryfall
 
-__version__ = "0.3.4"
+__version__ = "0.3.5"
 
 
 def print_arrays_with_keys(data, prefix='', separator='|', last_separator='='):

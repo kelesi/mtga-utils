@@ -30,6 +30,10 @@
   "vaultProgress": 5.6
 }
 
+<== KeywordOne {"id":1,"payload":{ "value": 1}}
+
+<== KeywordOneHundred {"id":100,"payload":{ "value": 100 }}
+
 <== TestKey
 {
     "test1":

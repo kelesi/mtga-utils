@@ -15,7 +15,9 @@ def _mtga_file_path(filename):
     return os.path.join(*components)
 
 MTGA_COLLECTION_KEYWORD = "PlayerInventory.GetPlayerCardsV3"
+MTGA_DECK_LISTS_KEYWORD = "Deck.GetDeckListsV3"
 MTGA_INVENTORY_KEYWORD = "PlayerInventory.GetPlayerInventory"
+
 MTGA_WINDOWS_LOG_FILE = _mtga_file_path("output_log.txt")
 MTGA_WINDOWS_FORMATS_FILE = _mtga_file_path("formats.json")
 
@@ -73,9 +75,9 @@ class MtgaLog(object):
                 dict_levels += line.count('{') - line.count('}')
                 list_levels += line.count('[') - line.count(']')
 
-                if line.count('}') > 0 and dict_levels == 0:
+                if line.count('}') > 0 and dict_levels == 0 and list_levels == 0:
                     copy = False
-                if line.count(']') > 0 and list_levels == 0:
+                if line.count(']') > 0 and list_levels == 0 and dict_levels == 0:
                     copy = False
         return bucket
 
@@ -101,11 +103,8 @@ class MtgaLog(object):
             card = scryfall.ScryfallError(scryfall_error)
         return card
 
-    def get_collection(self):
-        """Generator for MTGA collection"""
-        collection = self.get_last_json_block('<== ' + MTGA_COLLECTION_KEYWORD)
-        collection = collection.get('payload', collection)
-        for (mtga_id, count) in iteritems(collection):
+    def lookup_cards(self, list_of_pairs):
+        for (mtga_id, count) in list_of_pairs:
             try:
                 card = find_one_mtga_card(mtga_id)
             except ValueError as exception:
@@ -116,12 +115,29 @@ class MtgaLog(object):
             if card is not None:
                 yield [mtga_id, card, count]
 
+    def lookup_card(self, mtga_id):
+        try:
+            return find_one_mtga_card(mtga_id)
+        except ValueError as exception:
+            return self._fetch_card_from_scryfall(mtga_id)
+
+    def get_collection(self):
+        """Generator for MTGA collection"""
+        collection = self.get_last_json_block('<== ' + MTGA_COLLECTION_KEYWORD)
+        collection = collection.get('payload', collection)
+        return self.lookup_cards(iteritems(collection))
+
     def get_inventory(self):
         """Convenience function to get the player's inventory"""
         inventory_dict = self.get_last_json_block('<== ' + MTGA_INVENTORY_KEYWORD)
         inventory_dict = inventory_dict.get('payload', inventory_dict)
         return MtgaInventory(inventory_dict)
 
+    def get_deck_lists(self):
+        """Get all deck lists"""
+        deck_lists_json = self.get_last_json_block('<== ' + MTGA_DECK_LISTS_KEYWORD)
+        deck_lists_json = deck_lists_json.get('payload', deck_lists_json)
+        return [MtgaDeckList(j, self) for j in deck_lists_json]
 
 class MtgaInventory(object):
     """Wrapper for the player's inventory"""
@@ -174,3 +190,28 @@ class MtgaInventory(object):
             'Wildcards': self.wildcards
         }
 
+class MtgaDeckList(object):
+    """Wrapper for a deck list"""
+
+    def __init__(self, deck_list_json, card_lookup):
+        self.deck_list_json = deck_list_json
+
+        maindeck_pairs = zip(*[iter(self.deck_list_json['mainDeck'])]*2)
+        self.maindeck = card_lookup.lookup_cards(maindeck_pairs)
+
+        sideboard_pairs = zip(*[iter(self.deck_list_json['sideboard'])]*2)
+        self.sideboard = card_lookup.lookup_cards(sideboard_pairs)
+
+        self.deckbox_image = card_lookup.lookup_card(self.deck_list_json['deckTileId'])
+
+    @property
+    def deck_id(self):
+        return self.deck_list_json['id']
+
+    @property
+    def name(self):
+        return self.deck_list_json['name']
+
+    @property
+    def format(self):
+        return self.deck_list_json['format']

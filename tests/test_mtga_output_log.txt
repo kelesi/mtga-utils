@@ -17,18 +17,9 @@
     "70192": "1"
 }
 
-<== PlayerInventory.GetPlayerInventory(579)
-{
-  "wcCommon": 7,
-  "wcUncommon": 8,
-  "wcRare": 9,
-  "wcMythic": 10,
-  "gold": 2,
-  "gems": 1,
-  "draftTokens": 3,
-  "sealedTokens": 4,
-  "vaultProgress": 5.6
-}
+<== PlayerInventory.GetPlayerInventory {"id":579,"payload":{"wcCommon":7,"wcUncommon":8,"wcRare":9,"wcMythic":10,"gold":2,"gems":1,"draftTokens":3,"sealedTokens":4,"vaultProgress":5.6}}
+
+<== Deck.GetDeckListsV3 {"id":1,"payload":[{"id":"72ea9e67-1091-4e1c-81c2-3f2327378984","name":"Kethis Combo","format":"Standard","deckTileId":69501,"mainDeck":[69996,4,67552,3],"sideboard":[67206,2,68645,1]},{"id":"9a30e51b-430e-4879-bfbc-d801e3447b23","name":"Empty Deck","format":"Standard","deckTileId":66499,"mainDeck":[],"sideboard":[]}]}
 
 <== KeywordOne {"id":1,"payload":{ "value": 1}}
 
@@ -45,6 +36,13 @@
         }
     }}
 
+<== TestArray
+[
+  {
+    "key": "value"
+  }
+]
+
 blah
 { "foo" : "bar" }
 
@@ -52,3 +50,4 @@ invalid
 { aa : bb }
 
 <== NewFormat {"id":345,"payload":{"68286":1}}
+<== NewArrayFormat {"id":1,"payload":[{"key":"value"}]}

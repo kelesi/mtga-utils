@@ -139,6 +139,7 @@ class MtgaLog(object):
         deck_lists_json = deck_lists_json.get('payload', deck_lists_json)
         return [MtgaDeckList(j, self) for j in deck_lists_json]
 
+
 class MtgaInventory(object):
     """Wrapper for the player's inventory"""
 
@@ -190,6 +191,7 @@ class MtgaInventory(object):
             'Wildcards': self.wildcards
         }
 
+
 class MtgaDeckList(object):
     """Wrapper for a deck list"""
 
@@ -215,3 +217,16 @@ class MtgaDeckList(object):
     @property
     def format(self):
         return self.deck_list_json['format']
+
+    def deck(self):
+        return {
+            'id': self.deck_id,
+            'name': self.name,
+            'format': self.format,
+            'maindeck': list(self.maindeck),
+            'sideboard': list(self.sideboard)
+        }
+
+    def __str__(self):
+        """String representation of the inventory"""
+        return str(self.deck())

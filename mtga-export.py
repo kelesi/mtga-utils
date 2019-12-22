@@ -14,7 +14,7 @@ from mtga_log import *
 from mtga_formats import MtgaFormats, normalize_set
 import scryfall
 
-__version__ = "0.3.5"
+__version__ = "0.3.6"
 
 
 def print_arrays_with_keys(data, prefix='', separator='|', last_separator='='):
@@ -36,12 +36,19 @@ def print_arrays_with_keys(data, prefix='', separator='|', last_separator='='):
         prefix:a:bb=>2
         prefix:b=>3
     """
-    if isinstance(data, (list, dict, tuple)):
+    if isinstance(data, (dict)):
         if prefix:
             prefix += separator
         for key, value in iteritems(data):
             print_arrays_with_keys(value, prefix + key, separator, last_separator)
         return
+    if isinstance(data, (list, tuple)):
+        i=0
+        for value in data:
+            i+=1
+            print_arrays_with_keys(value, prefix + '['+str(i)+']', separator, last_separator)
+        return
+
     print(prefix + last_separator + str(data))
 
 
@@ -70,6 +77,10 @@ def get_argparse_parser():
     parser.add_argument("-ct", "--completiontracker", help="Export set completion", action="store_true")
     parser.add_argument("-i",  "--inventory", help="Print inventory", action="store_true")
     parser.add_argument("-ij", "--inventoryjson", help="Print inventory as json", action="store_true")
+    parser.add_argument("--decks", help="Print user decks", action="store_true")
+    parser.add_argument("--decksjson", help="Print user decks as json", action="store_true")
+    parser.add_argument("--decknames", help="Print names of user's decks", action="store_true")
+    parser.add_argument("--deckinfo", metavar="DECK_NAME", help="Print info about specific deck", nargs=1)
     parser.add_argument("-f",  "--file", help="Store export to file", nargs=1)
     parser.add_argument("--log", help="Log level", nargs="?", default="INFO")
     return parser
@@ -216,6 +227,24 @@ def main(args_string=None):
     if args.inventoryjson:
         inventory_dict = mlog.get_inventory().inventory()
         output.append(str(inventory_dict))
+
+    if args.decks or args.decksjson:
+        decks = {}
+        for deck in mlog.get_deck_lists():
+            decks[deck.name] = deck.deck()
+        if args.decksjson:
+            output.append(str(decks))
+        if args.decks:
+            print_arrays_with_keys(decks, '', ':')
+
+    if args.decknames:
+        for deck in mlog.get_deck_lists():
+            output.append(deck.name)
+
+    if args.deckinfo:
+        for deck in mlog.get_deck_lists():
+            if deck.name == args.deckinfo[0]:
+                print_arrays_with_keys(deck.deck(), '', ':')
 
     if output != []:
         output_str = '\n'.join(output)

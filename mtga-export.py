@@ -14,7 +14,7 @@ from mtga_log import *
 from mtga_formats import MtgaFormats, normalize_set
 import scryfall
 
-__version__ = "0.3.6"
+__version__ = "0.3.7"
 
 
 def print_arrays_with_keys(data, prefix='', separator='|', last_separator='='):
@@ -81,6 +81,7 @@ def get_argparse_parser():
     parser.add_argument("--decksjson", help="Print user decks as json", action="store_true")
     parser.add_argument("--decknames", help="Print names of user's decks", action="store_true")
     parser.add_argument("--deckinfo", metavar="DECK_NAME", help="Print info about specific deck", nargs=1)
+    parser.add_argument("--deckexport", metavar="DECK_NAME", help="Export specific deck in Arena format", nargs=1)
     parser.add_argument("-f",  "--file", help="Store export to file", nargs=1)
     parser.add_argument("--log", help="Log level", nargs="?", default="INFO")
     return parser
@@ -245,6 +246,11 @@ def main(args_string=None):
         for deck in mlog.get_deck_lists():
             if deck.name == args.deckinfo[0]:
                 print_arrays_with_keys(deck.deck(), '', ':')
+
+    if args.deckexport:
+        for deck in mlog.get_deck_lists():
+            if deck.name == args.deckexport[0]:
+                output.append(deck.export_arena())
 
     if output != []:
         output_str = '\n'.join(output)

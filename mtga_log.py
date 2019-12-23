@@ -227,6 +227,22 @@ class MtgaDeckList(object):
             'sideboard': list(self.sideboard)
         }
 
+    def export_arena(self):
+        export = []
+        export.append("Deck")
+        for [mtga_id, card, count] in self.maindeck:
+            export.append("{} {} ({}) {}".format(count, card.pretty_name, card.set, card.set_number))
+        export.append("")
+
+        export.append("Sideboard")
+        for [mtga_id, card, count] in self.sideboard:
+            export.append("{} {} ({}) {}".format(count, card.pretty_name, card.set, card.set_number))
+
+        return '\n'.join(export)
+
+    def __repr__(self):
+        return self.deck()
+
     def __str__(self):
         """String representation of the inventory"""
         return str(self.deck())

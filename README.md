@@ -39,8 +39,8 @@ Export your collection in [deckstats](https://www.mtggoldfish.com/help/import_fo
 usage: mtga-export.py [-h] [-v] [-l LOG_FILE] [-k KEYWORD] [--collids] [-c]
                       [-e {name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id,count} [{name,pretty_name,cost,sub_types,set,set_number,card_type,mtga_id,count} ...]]
                       [-gf] [-ds] [-ct] [-i] [-ij] [--decks] [--decksjson]
-                      [--decknames] [--deckinfo DECK_NAME] [-f FILE]
-                      [--log [LOG]]
+                      [--decknames] [--deckinfo DECK_NAME]
+                      [--deckexport DECK_NAME] [-f FILE] [--log [LOG]]
 
 Parse MTGA log file
 
@@ -66,6 +66,7 @@ optional arguments:
   --decksjson           Print user decks as json
   --decknames           Print names of user's decks
   --deckinfo DECK_NAME  Print info about specific deck
+  --deckexport DECK_NAME
+                        Export specific deck in Arena format
   -f FILE, --file FILE  Store export to file
-  --log [LOG]           Log level
-```
+  --log [LOG]           Log level```

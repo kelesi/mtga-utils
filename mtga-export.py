@@ -227,7 +227,7 @@ def main(args_string=None):
 
     if args.inventoryjson:
         inventory_dict = mlog.get_inventory().inventory()
-        output.append(str(inventory_dict))
+        output.append(json.dumps(inventory_dict, indent=2))
 
     if args.decks or args.decksjson:
         decks = {}

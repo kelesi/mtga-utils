@@ -69,4 +69,5 @@ optional arguments:
   --deckexport DECK_NAME
                         Export specific deck in Arena format
   -f FILE, --file FILE  Store export to file
-  --log [LOG]           Log level```
+  --log [LOG]           Log level
+  ```

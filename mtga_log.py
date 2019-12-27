@@ -11,7 +11,7 @@ def _mtga_file_path(filename):
     appdata = os.getenv("APPDATA")
     # If we don't have APPDATA, assume we're in the user's home directory
     base = [appdata, ".."] if appdata else ["AppData"]
-    components = base + ["LocalLow", "Wizards of the Coast", "MTGA", filename]
+    components = base + ["LocalLow", "Wizards Of The Coast", "MTGA", filename]
     return os.path.join(*components)
 
 MTGA_COLLECTION_KEYWORD = "PlayerInventory.GetPlayerCardsV3"

@@ -17,9 +17,11 @@
     "70192": "1"
 }
 
-<== PlayerInventory.GetPlayerInventory {"id":579,"payload":{"wcCommon":7,"wcUncommon":8,"wcRare":9,"wcMythic":10,"gold":2,"gems":1,"draftTokens":3,"sealedTokens":4,"vaultProgress":5.6}}
+<== PlayerInventory.GetPlayerInventory {"id":579,"payload":{"wcCommon":7,"wcUncommon":8,"wcRare":9,"wcMythic":10,"gold":2,"gems":1,"draftTokens":3,"sealedTokens":4,"vaultProgress":5.6,"starterDecks":["89622fa6-abf0-409e-b585-0f56d8514a77","a8e7c251-ea7a-49d5-8685-619008380aa8"]}}
 
 <== Deck.GetDeckListsV3 {"id":1,"payload":[{"id":"72ea9e67-1091-4e1c-81c2-3f2327378984","name":"Kethis Combo","format":"Standard","deckTileId":69501,"mainDeck":[69996,4,67552,3],"sideboard":[67206,2,68645,1]},{"id":"9a30e51b-430e-4879-bfbc-d801e3447b23","name":"Empty Deck","format":"Standard","deckTileId":66499,"mainDeck":[],"sideboard":[]}]}
+
+<== Deck.GetPreconDecksV3 {"id":1,"payload":[{"id":"3b71e463-7a19-4a62-8695-855e024e645f","name":"Simic Flash","format":"Standard","deckTileId":69302,"mainDeck":[69302,1,70205,2],"sideboard":[70312,3]},{"id":"3bc28429-48d3-42e8-9aa1-79a904e84bfd","name":"Empty Deck","format":"Standard","deckTileId":70272,"mainDeck":[],"sideboard":[]}]}
 
 <== KeywordOne {"id":1,"payload":{ "value": 1}}
 

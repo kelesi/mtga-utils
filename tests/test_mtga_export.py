@@ -109,6 +109,11 @@ class Test_MtgaLog(unittest.TestCase):
         self.assertEqual(inventory.wildcards['Rare'], 9)
         self.assertEqual(inventory.wildcards['Mythic Rare'], 10)
 
+        starter_decks = inventory.starter_decks
+        self.assertEqual(len(starter_decks), 2)
+        self.assertEqual(starter_decks[0], '89622fa6-abf0-409e-b585-0f56d8514a77')
+        self.assertEqual(starter_decks[1], 'a8e7c251-ea7a-49d5-8685-619008380aa8')
+
     def test_deck_lists(self):
         deck_lists = self.mlog.get_deck_lists()
 
@@ -129,6 +134,14 @@ class Test_MtgaLog(unittest.TestCase):
 
         self.assertEqual(kethis_deck.deckbox_image.pretty_name, 'Fblthp, the Lost')
         self.assertEqual(kethis_deck.deck_id, '72ea9e67-1091-4e1c-81c2-3f2327378984')
+
+    def test_preconstructed_deck_lists(self):
+        precon_deck_lists = self.mlog.get_preconstructed_deck_lists()
+
+        self.assertEqual(len(precon_deck_lists), 2)
+        simic_flash = precon_deck_lists[0]
+        self.assertEqual(simic_flash.name, 'Simic Flash')
+        self.assertEqual(simic_flash.deck_id, '3b71e463-7a19-4a62-8695-855e024e645f')
 
 class Test_Scryfall(unittest.TestCase):
     """Test the scryfall module"""

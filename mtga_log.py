@@ -17,6 +17,7 @@ def _mtga_file_path(filename):
 MTGA_COLLECTION_KEYWORD = "PlayerInventory.GetPlayerCardsV3"
 MTGA_DECK_LISTS_KEYWORD = "Deck.GetDeckListsV3"
 MTGA_INVENTORY_KEYWORD = "PlayerInventory.GetPlayerInventory"
+MTGA_PRECON_DECK_LISTS_KEYWORD = "Deck.GetPreconDecksV3"
 
 MTGA_WINDOWS_LOG_FILE = _mtga_file_path("output_log.txt")
 MTGA_WINDOWS_FORMATS_FILE = _mtga_file_path("formats.json")
@@ -139,6 +140,12 @@ class MtgaLog(object):
         deck_lists_json = deck_lists_json.get('payload', deck_lists_json)
         return [MtgaDeckList(j, self) for j in deck_lists_json]
 
+    def get_preconstructed_deck_lists(self):
+        """Get all preconstructed deck lists"""
+        deck_lists_json = self.get_last_json_block('<== ' + MTGA_PRECON_DECK_LISTS_KEYWORD)
+        deck_lists_json = deck_lists_json.get('payload', deck_lists_json)
+        return [MtgaDeckList(j, self) for j in deck_lists_json]
+
 
 class MtgaInventory(object):
     """Wrapper for the player's inventory"""
@@ -173,6 +180,10 @@ class MtgaInventory(object):
             'Rare': self.inventory_dict['wcRare'],
             'Mythic Rare': self.inventory_dict['wcMythic']
         }
+
+    @property
+    def starter_decks(self):
+        return self.inventory_dict['starterDecks']
 
     def __str__(self):
         """String representation of the inventory"""

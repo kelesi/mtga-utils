@@ -14,7 +14,7 @@ from mtga_log import *
 from mtga_formats import MtgaFormats, normalize_set
 import scryfall
 
-__version__ = "0.3.7"
+__version__ = "0.3.8"
 
 
 def print_arrays_with_keys(data, prefix='', separator='|', last_separator='='):
@@ -165,6 +165,14 @@ def main(args_string=None):
         sys.exit(1)
 
     mlog = MtgaLog(log_file)
+
+    if not mlog.detailed_logs():
+        print('DETAILED LOGS (PLUGIN SUPPORT) ARE DISABLED.')
+        print('Please Log into Arena and go to "Adjust Options":')
+        print('    - click on "View Account"')
+        print('    - check the “Detailed Logs (Plugin Support)” button')
+        print('    - restart the game')
+        return 1
 
     if args.collids:
         args.keyword = MTGA_COLLECTION_KEYWORD

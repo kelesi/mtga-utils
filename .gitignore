@@ -4,3 +4,4 @@ dist/*
 mtga-export.spec
 *.pyc
 venv
+.idea/**

@@ -45,6 +45,15 @@ class MtgaLog(object):
         self.log_filename = log_filename
         self.fallback = True
 
+    def detailed_logs(self):
+        """Are detailed logs enabled"""
+        with open(self.log_filename) as logfile:
+            head = ''.join([next(logfile) for x in range(100)])
+
+        if re.search(r"DETAILED LOGS: ENABLED", head) is not None:
+            return True
+        return False
+
     def scryfall_fallback(self, fallback=True):
         """Enable/disable fallback to Scryfall"""
         self.fallback = fallback

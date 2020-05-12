@@ -1,0 +1,14 @@
+#!/bin/sh
+trap cleanup EXIT SIGINT
+
+cleanup()
+{
+    cd "$start_dir"
+}
+
+repo_root="$(git rev-parse --show-toplevel)"
+start_dir="$(pwd)"
+
+cd "$repo_root"
+python3 -m PyInstaller mtga-export.py --onefile
+

@@ -1,6 +1,10 @@
 import simplejson as json
-from mtga_log import MtgaLogParsingError
+from mtga_log import MtgaLogParsingError, get_mtga_file_path
 import scryfall
+
+MTGA_FORMATS_FILENAME = "formats.json"
+MTGA_FORMATS_KEYWORD = "PlayerInventory.GetFormats"
+
 
 def normalize_set(set_id, conversion={}):
     """Convert set id readable by goldfish/deckstats"""
@@ -11,13 +15,23 @@ def normalize_set(set_id, conversion={}):
 class MtgaFormats(object):
     """Process MTGA/Unity formats file"""
 
-    def __init__(self, formats_filename):
+    def __init__(self, mtga_log, formats_filename=None):
+        self.mtga_log = mtga_log
         self.formats_filename = formats_filename
+
+    def get_full_filename(self):
+        if self.formats_filename is None:
+            return get_mtga_file_path(MTGA_FORMATS_FILENAME)
+        return self.formats_filename
 
     def _get_formats_json(self):
         """Gets the formats json"""
-        with open(self.formats_filename) as formats_file:
-            return json.load(formats_file)
+        try:
+            with open(self.get_full_filename()) as formats_file:
+                return json.load(formats_file)
+        except FileNotFound:
+            return mtga_log.get_last_json_block(MTGA_FORMATS_KEYWORD)
+
 
     def get_format_sets(self, mtg_format):
         """Returns list of current sets in standard format"""

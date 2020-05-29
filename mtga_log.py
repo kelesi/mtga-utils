@@ -4,24 +4,28 @@ import os
 import simplejson as json
 import scryfall
 import re
+import logging
 
-
-def _mtga_file_path(filename):
-    """Get the full path to the specified MTGA file"""
-    appdata = os.getenv("APPDATA")
-    # If we don't have APPDATA, assume we're in the user's home directory
-    base = [appdata, ".."] if appdata else ["AppData"]
-    components = base + ["LocalLow", "Wizards Of The Coast", "MTGA", filename]
-    return os.path.join(*components)
 
 MTGA_COLLECTION_KEYWORD = "PlayerInventory.GetPlayerCardsV3"
 MTGA_DECK_LISTS_KEYWORD = "Deck.GetDeckListsV3"
 MTGA_INVENTORY_KEYWORD = "PlayerInventory.GetPlayerInventory"
 MTGA_PRECON_DECK_LISTS_KEYWORD = "Deck.GetPreconDecksV3"
+MTGA_LOG_FILENAME = "Player.log"
 
-MTGA_WINDOWS_LOG_FILE = _mtga_file_path("output_log.txt")
-MTGA_WINDOWS_FORMATS_FILE = _mtga_file_path("formats.json")
+def _mtga_file_path(filename):
+    """Get the full path to the specified MTGA file"""
+    appdata = os.path.dirname(os.getenv("APPDATA"))
+    # If we don't have APPDATA, assume we're in the user's home directory
+    base = [appdata] if appdata else ["AppData"]
+    components = base + ["LocalLow", "Wizards Of The Coast", "MTGA", filename]
+    return os.path.join(*components)
 
+def get_mtga_file_path(filename):
+    filepath = _mtga_file_path(filename)
+    if not os.path.isfile(filepath):
+        raise FileNotFoundError('Could not find file %s' % filepath)
+    return filepath
 
 def find_one_mtga_card(mtga_id):
     from mtga.set_data import all_mtga_cards
@@ -41,8 +45,9 @@ class MtgaUnknownCard(ValueError):
 class MtgaLog(object):
     """Process MTGA/Unity log file"""
 
-    def __init__(self, log_filename):
-        self.log_filename = log_filename
+    def __init__(self, log_filename=None):
+        self.log_filename = get_mtga_file_path(MTGA_LOG_FILENAME) if log_filename is None else log_filename
+        logging.debug("MtgaLog: %s" % self.log_filename)
         self.fallback = True
 
     def detailed_logs(self):

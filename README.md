@@ -1,8 +1,13 @@
 # Export your card collection from MTG: Arena
-You need to install [python-mtga](https://github.com/mtgatracker/python-mtga) to use the export tool or use the pre-built windows executable.
+If you want to use just the pre-built Windows executable, there are no pre-requisites.
+
+Otherwise you will need to install [mtgatracker/python-mtga](https://github.com/mtgatracker/python-mtga) to use the export tool.
+You can try following forks, if the original python-mtga module fails:
+ - [kelesi/python-mtga](https://github.com/kelesi/python-mtga/tree/logging)
+ - [pak21/python-mtga](https://github.com/pak21/python-mtga)
 
 #### Note:
-mtga-export.py reads the MTGA/Unity log file located under: 
+mtga-export reads the MTGA/Unity log file located under: 
     
     "%AppData%\LocalLow\Wizards Of The Coast\MTGA\Player.log"
 

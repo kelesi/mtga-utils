@@ -4,7 +4,7 @@ You need to install [python-mtga](https://github.com/mtgatracker/python-mtga) to
 #### Note:
 mtga-export.py reads the MTGA/Unity log file located under: 
     
-    "%AppData%\LocalLow\Wizards Of The Coast\MTGA\output_log.txt"
+    "%AppData%\LocalLow\Wizards Of The Coast\MTGA\Player.log"
 
 In order for this export tool to work, "Detailed Logs (Plugin Support)" must be enabled in MTGA's Options / Account screen.
 If the MTGA game developers stop logging to this file, this export tool will not work anymore.

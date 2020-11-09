@@ -1,3 +1,5 @@
+RingDoorbell [fdHost:client.arenagame-a.east.magic-the-gathering-arena.com, fdPort:9405, contentHash:
+
 <== PlayerInventory.GetPlayerCardsV3(10)
 {
     "67682": "1",

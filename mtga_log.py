@@ -87,8 +87,9 @@ class MtgaLog(object):
                 if copy and line:
                     bucket.append(line)
 
-                dict_levels += line.count('{') - line.count('}')
-                list_levels += line.count('[') - line.count(']')
+                if copy:
+                    dict_levels += line.count('{') - line.count('}')
+                    list_levels += line.count('[') - line.count(']')
 
                 if line.count('}') > 0 and dict_levels == 0 and list_levels == 0:
                     copy = False

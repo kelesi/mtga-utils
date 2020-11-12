@@ -14,17 +14,19 @@ from mtga_log import *
 from mtga_formats import MtgaFormats, normalize_set
 import scryfall
 
-__version__ = "0.4.3"
+__version__ = "0.4.4"
 
 
 def print_arrays_with_keys(data, prefix='', separator='|', last_separator='='):
     """Prints array branches on one line separated with a character.
 
     Args:
-        prefix (string): Prefix to use at the begining of the line.
+        data: List, tuple or dictionary to print
+        prefix (str): Prefix to use at the begining of the line.
             Defaults to empty string.
-        separator (string): Character or string to use as value/key separator.
+        separator (str): Character or string to use as value/key separator.
             Defaults to pipe '|'.
+        last_separator (str): Last seperator used before printing final value
 
     Examples:
         >>> print_arrays_with_keys({'a': {'bb': {'ccc': 1}}})
@@ -36,16 +38,16 @@ def print_arrays_with_keys(data, prefix='', separator='|', last_separator='='):
         prefix:a:bb=>2
         prefix:b=>3
     """
-    if isinstance(data, (dict)):
+    if isinstance(data, dict):
         if prefix:
             prefix += separator
         for key, value in iteritems(data):
             print_arrays_with_keys(value, prefix + key, separator, last_separator)
         return
     if isinstance(data, (list, tuple)):
-        i=0
+        i = 0
         for value in data:
-            i+=1
+            i += 1
             print_arrays_with_keys(value, prefix + '['+str(i)+']', separator, last_separator)
         return
 
@@ -60,7 +62,8 @@ def get_argparse_parser():
     """
     parser = argparse.ArgumentParser(description="Parse MTGA log file")
     parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + __version__)
-    parser.add_argument("-l", "--log_file", help="MTGA/Unity log file [Win: %%AppData%%\\LocalLow\\Wizards Of The Coast\\MTGA\\Player.log]", nargs=1)
+    parser.add_argument("-l", "--log_file", nargs=1,
+                        help="MTGA/Unity log file [Win: %%AppData%%\\LocalLow\\Wizards Of The Coast\\MTGA\\Player.log]")
     parser.add_argument("-k", "--keyword", help="List json under keyword", nargs=1)
     parser.add_argument("--collids", help="List collection ids", action="store_true")
     parser.add_argument("-c", "--collection", help="List collection with card data", action="store_true")
@@ -128,7 +131,7 @@ def get_keyword_data(args, mlog):
     return data
 
 
-def get_collection(args, mlog):
+def get_collection(mlog):
     """Get collection and print messages"""
     from mtga.models.card import Card
 
@@ -158,11 +161,13 @@ def main(args_string=None):
 
     if args.log_file:
         log_file = args.log_file[0]
-        if not os.path.isfile(log_file):
-            print("Log file does not exist, provide proper logfile [%s]" % log_file)
-            sys.exit(1)
 
-    mlog = MtgaLog(log_file)
+    try:
+        mlog = MtgaLog(log_file)
+    except FileNotFoundError as exception:
+        print("Arena log file not found, please provide proper log file.")
+        print(str(exception))
+        sys.exit(1)
 
     if not mlog.detailed_logs():
         print('DETAILED LOGS (PLUGIN SUPPORT) ARE DISABLED.')
@@ -179,13 +184,13 @@ def main(args_string=None):
         print(get_keyword_data(args, mlog))
 
     if args.collection:
-        for card, count in get_collection(args, mlog):
+        for card, count in get_collection(mlog):
             logging.debug(str(card))
             print(card.mtga_id, card, count)
 
     if args.export:
         output.append(','.join(args.export))
-        for card, count in get_collection(args, mlog):
+        for card, count in get_collection(mlog):
             fields = []
             for key in args.export:
                 if key == "count":
@@ -198,7 +203,7 @@ def main(args_string=None):
         sets_progression_output = {}
         mformats = MtgaFormats(mtga_log=mlog)
 
-        for card, count in get_collection(args, mlog):
+        for card, count in get_collection(mlog):
             if sets_progression_output.get(card.set, None) is None:
                 sets_progression_output[card.set] = {
                     'singlesOwned': 0,
@@ -215,13 +220,13 @@ def main(args_string=None):
 
     if args.goldfish:
         output.append('Card,Set ID,Set Name,Quantity,Foil')
-        for card, count in get_collection(args, mlog):
+        for card, count in get_collection(mlog):
             card_set = normalize_set(card.set, {'ANA': 'ARENA'})
             output.append('"%s",%s,%s,%s,%s' % (card.pretty_name, card_set, '', count, ''))
 
     if args.deckstats:
         output.append('card_name,amount,set_code,is_foil,is_pinned')
-        for card, count in get_collection(args, mlog):
+        for card, count in get_collection(mlog):
             card_set = normalize_set(card.set, {'ANA': 'MTGA'})
             output.append('"%s",%s,"%s",%s,%s' % (
                 card.pretty_name, count, card_set, 0, 0,
@@ -258,7 +263,7 @@ def main(args_string=None):
             if deck.name == args.deckexport[0]:
                 output.append(deck.export_arena())
 
-    if output != []:
+    if output:
         output_str = '\n'.join(output)
         if args.file:
             with open(args.file[0], "w") as out_file:

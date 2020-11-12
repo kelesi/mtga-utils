@@ -6,8 +6,9 @@ MTGA_FORMATS_FILENAME = "formats.json"
 MTGA_FORMATS_KEYWORD = "PlayerInventory.GetFormats"
 
 
-def normalize_set(set_id, conversion={}):
+def normalize_set(set_id, conversion=None):
     """Convert set id readable by goldfish/deckstats"""
+    conversion = {} if conversion is None else conversion
     conversion.update({'DAR': 'DOM'})
     return conversion.get(set_id.upper(), set_id.upper())
 
@@ -29,9 +30,8 @@ class MtgaFormats(object):
         try:
             with open(self.get_full_filename()) as formats_file:
                 return json.load(formats_file)
-        except FileNotFound:
-            return mtga_log.get_last_json_block(MTGA_FORMATS_KEYWORD)
-
+        except FileNotFoundError:
+            return self.mtga_log.get_last_json_block(MTGA_FORMATS_KEYWORD)
 
     def get_format_sets(self, mtg_format):
         """Returns list of current sets in standard format"""

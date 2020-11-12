@@ -79,7 +79,7 @@ class Test_MtgaLog(unittest.TestCase):
         ["123",   MtgaUnknownCard],
         ["67688", "Ajani's Last Stand"],
         ["68369", "Firesong and Sunspeaker"],
-        #["64037", "Bomat Courier"],
+        ["71132", "Reconnaissance Mission"],
         ["70192", "Faerie Vandal"],
         ["69108", "Angelic Reward"]
     ])
@@ -151,7 +151,7 @@ class Test_Scryfall(unittest.TestCase):
         ["123", scryfall.ScryfallError],
         ["67688", "Ajani's Last Stand"],
         ["68369", "Firesong and Sunspeaker"],
-        ["64037", "Bomat Courier"],
+        ["71132", "Reconnaissance Mission"],
         ["69108", "Angelic Reward"]
     ])
     def test_get_mtga_card(self, mtga_id, expected_card_name):

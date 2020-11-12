@@ -13,19 +13,23 @@ MTGA_INVENTORY_KEYWORD = "PlayerInventory.GetPlayerInventory"
 MTGA_PRECON_DECK_LISTS_KEYWORD = "Deck.GetPreconDecksV3"
 MTGA_LOG_FILENAME = "Player.log"
 
+
 def _mtga_file_path(filename):
     """Get the full path to the specified MTGA file"""
-    appdata = os.path.dirname(os.getenv("APPDATA"))
+    appdata = os.getenv("APPDATA")
+
     # If we don't have APPDATA, assume we're in the user's home directory
-    base = [appdata] if appdata else ["AppData"]
+    base = [os.path.dirname(appdata)] if appdata else ["AppData"]
     components = base + ["LocalLow", "Wizards Of The Coast", "MTGA", filename]
     return os.path.join(*components)
+
 
 def get_mtga_file_path(filename):
     filepath = _mtga_file_path(filename)
     if not os.path.isfile(filepath):
         raise FileNotFoundError('Could not find file %s' % filepath)
     return filepath
+
 
 def find_one_mtga_card(mtga_id):
     from mtga.set_data import all_mtga_cards
@@ -53,7 +57,7 @@ class MtgaLog(object):
     def detailed_logs(self):
         """Are detailed logs enabled"""
         with open(self.log_filename) as logfile:
-            head = ''.join([next(logfile) for x in range(100)])
+            head = ''.join([next(logfile) for _ in range(100)])
 
         if re.search(r"DETAILED LOGS: ENABLED", head) is not None:
             return True
@@ -77,7 +81,8 @@ class MtgaLog(object):
         with open(self.log_filename) as logfile:
             for line in logfile:
                 if re.search(r"%s\b" % re.escape(keyword), line):
-                    bucket = []
+                    bucket, dict_levels, list_levels = [], 0, 0
+
                     if line.count('{') > 0 or line.count('[') > 0:
                         line = re.sub(r'.*' + re.escape(keyword), '', line)
                     else:
@@ -86,8 +91,6 @@ class MtgaLog(object):
 
                 if copy and line:
                     bucket.append(line)
-
-                if copy:
                     dict_levels += line.count('{') - line.count('}')
                     list_levels += line.count('[') - line.count(']')
 
@@ -104,7 +107,7 @@ class MtgaLog(object):
             return self._list_to_json(block)
         except ValueError as exception:
             raise MtgaLogParsingError(exception)
-            #return False
+            # return False
 
     def _list_to_json(self, json_list):
         json_string = ''.join(json_list)
@@ -125,7 +128,7 @@ class MtgaLog(object):
                 card = find_one_mtga_card(mtga_id)
             except ValueError as exception:
                 yield [mtga_id, MtgaUnknownCard(exception), count]
-                #Card not found, try to get it from scryfall
+                # Card not found, try to get it from scryfall
                 card = self._fetch_card_from_scryfall(mtga_id)
 
             if card is not None:
@@ -134,7 +137,7 @@ class MtgaLog(object):
     def lookup_card(self, mtga_id):
         try:
             return find_one_mtga_card(mtga_id)
-        except ValueError as exception:
+        except ValueError:
             return self._fetch_card_from_scryfall(mtga_id)
 
     def get_collection(self):
@@ -254,8 +257,7 @@ class MtgaDeckList(object):
         }
 
     def export_arena(self):
-        export = []
-        export.append("Deck")
+        export = ["Deck"]
         for [mtga_id, card, count] in self.maindeck:
             export.append("{} {} ({}) {}".format(count, card.pretty_name, card.set, card.set_number))
         export.append("")
